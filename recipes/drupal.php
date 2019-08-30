@@ -42,7 +42,6 @@ set('rsync_src', __DIR__ . '/.build/current');
 set('rsync', [
   'exclude' => [
     '.git',
-    '/*',
   ],
   'include' => [
     'vendor',
