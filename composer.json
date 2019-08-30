@@ -1,0 +1,27 @@
+{
+    "name": "ubccs/recipes",
+    "description": "UBCCS deployer recipes",
+    "type": "library",
+    "keywords": [
+        "deployer",
+        "recipes",
+        "deploy",
+        "deployment",
+        "drupal"
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "files": [
+            "autoload.php"
+        ]
+    },
+    "replace": {
+        "deployer/recipes": "self.version"
+    },
+    "require-dev": {
+        "deployer/deployer": "^6.3"
+    },
+    "require": {
+        "php": "~7.0"
+    }
+}
