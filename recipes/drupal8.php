@@ -13,6 +13,9 @@ add('rsync', [
   'exclude' => [
     '/drush/*',
     '/web/*',
+    '/web/modules/*',
+    '/web/profiles/*',
+    '/web/themes/*',
   ],
   'include' => [
     'drush',
@@ -20,9 +23,11 @@ add('rsync', [
     'web',
     'web/core',
     'web/libraries',
+    'web/modules',
+    'web/profiles',
+    'web/themes',
     'web/modules/contrib',
     'web/profiles/contrib',
     'web/themes/contrib',
   ],
 ]);
-
