@@ -1,5 +1,6 @@
 {
     "name": "ubccs/recipes",
+    "license": "MIT",
     "description": "UBCCS deployer recipes",
     "type": "library",
     "keywords": [
