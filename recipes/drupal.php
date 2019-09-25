@@ -43,16 +43,14 @@ set('rsync', [
   'exclude' => [
     '.git',
   ],
-  'include' => [
-    'vendor',
-  ],
+  'include' => [],
   'exclude-file' => FALSE,
   'include-file' => FALSE,
   'filter' => [],
   'filter-file' => FALSE,
   'filter-perdir' => FALSE,
   'flags' => 'rzclE',
-  'options' => ['delete'],
+  'options' => ['delete', 'delete-after', 'force'],
   'timeout' => 300,
 ]);
 

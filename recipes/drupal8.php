@@ -9,13 +9,23 @@ add('shared_files', [
   '.env',
 ]);
 
+// Using filter because the order of the exculsions matters.
+// This is the option order:
+//   {{rsync_options}}{{rsync_excludes}}{{rsync_includes}}{{rsync_filter}}
 add('rsync', [
-  'include' => [
-    'drush/Commands',
-    'web/core',
-    'web/libraries',
-    'web/modules/contrib',
-    'web/profiles/contrib',
-    'web/themes/contrib',
+  'filter' => [
+    '+ /drush/',
+    '+ /drush/Commands/***',
+    '+ /web/',
+    '+ /web/core/***',
+    '+ /web/libraries/***',
+    '+ /web/modules/',
+    '+ /web/modules/contrib/***',
+    '+ /web/profiles/',
+    '+ /web/profiles/contrib/***',
+    '+ /web/themes/',
+    '+ /web/themes/contrib/***',
+    '+ /vendor/***',
+    '- *',
   ],
 ]);
