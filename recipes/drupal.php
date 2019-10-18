@@ -38,7 +38,7 @@ task('drupal:settings', function () {
 });
 
 // Prepare vendor files to be synced.
-set('rsync_src', '.build/current');
+set('rsync_src', './.build/current');
 set('rsync', [
   'exclude' => [
     '.git',
@@ -61,7 +61,7 @@ task('build', function () {
     set('branch', 'master');
   }
 
-  set('deploy_path', '.build');
+  set('deploy_path', './.build');
   invoke('deploy:prepare');
   invoke('deploy:release');
   invoke('deploy:update_code');
@@ -71,7 +71,7 @@ task('build', function () {
 
 // Remove the build directory after deploy.
 task('build:cleanup', function () {
-  set('deploy_path', '.build');
+  set('deploy_path', './.build');
   $sudo = get('cleanup_use_sudo') ? 'sudo' : '';
   $runOpts = [];
   if ($sudo) {
