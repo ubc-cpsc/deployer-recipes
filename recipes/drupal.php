@@ -87,7 +87,6 @@ task('deploy', [
   'deploy:lock',
   'deploy:release',
   'deploy:update_code',
-  'rsync:warmup',
   'rsync',
   'deploy:shared',
   'drupal:settings',
