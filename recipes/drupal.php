@@ -49,7 +49,7 @@ set('rsync', [
   'filter' => [],
   'filter-file' => FALSE,
   'filter-perdir' => FALSE,
-  'flags' => 'rzclE',
+  'flags' => 'rclE',
   'options' => ['delete', 'delete-after', 'force'],
   'timeout' => 300,
 ]);
