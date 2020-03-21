@@ -90,7 +90,6 @@ task('deploy', [
   'rsync:warmup',
   'rsync',
   'deploy:shared',
-  'drupal:settings',
   'deploy:symlink',
   'deploy:unlock',
   'cleanup',
