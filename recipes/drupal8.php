@@ -35,5 +35,5 @@ task('deploy:config_import', function () {
   cd('{{release_path}}/public');
   // Run updb before config import to catch up schema.
   run('drush -y updb');
-  run('drush -y csim');
+  run('drush -y config:import');
 })->once();
