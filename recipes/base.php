@@ -33,7 +33,11 @@ set('rsync', [
 // Build the vendor directory locally.
 task('build', function () {
   $stage = input()->getArgument('stage');
-  if ($stage == 'production') {
+
+  // As long as the branch isn't explicitly passed in the command line,
+  // use master for production stage.
+  $branch = input()->getOption('branch');
+  if ($stage == 'production' && !$branch) {
     set('branch', 'master');
   }
 
