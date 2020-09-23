@@ -17,6 +17,7 @@ task('deploy:artisan', function () {
   invoke('artisan:route:cache');
 });
 
-
 // Additional deploy steps for Laravel.
-before('deploy:symlink', 'deploy:artisan');
+// Before deploy:symlink since there is a local task call too, we use
+// after deploy:shared.
+after('deploy:shared', 'deploy:artisan');
