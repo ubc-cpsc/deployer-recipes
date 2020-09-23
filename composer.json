@@ -16,6 +16,15 @@
             "autoload.php"
         ]
     },
+    "config": {
+        "discard-changes": true,
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.2.24"
+        },
+        "preferred-install": "source",
+        "sort-packages": true
+    },
     "require-dev": {
         "deployer/deployer": "^6.3"
     },
