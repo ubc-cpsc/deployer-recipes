@@ -29,6 +29,7 @@
         "deployer/deployer": "^6.3"
     },
     "require": {
-        "php": "~7.0"
+        "php": "~7.0",
+        "deployer/recipes": "^6.2"
     }
 }
