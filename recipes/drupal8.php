@@ -34,6 +34,13 @@ desc('Execute config import');
 task('deploy:config_import', function () {
   cd('{{release_path}}/public');
   // Run updb before config import to catch up schema.
-  run('drush -y updb');
-  run('drush -y config:import');
+  $output = run('drush -y updb');
+  writeln("<info>$output</info>");
+  $output = run('drush -y config:import');
+  writeln("<info>$output</info>");
 })->once();
+
+// Additional database update and config import steps for Drupal.
+// Before deploy:symlink since there is a local task call too, we use
+// after deploy:shared.
+after('deploy:shared', 'deploy:config_import');
