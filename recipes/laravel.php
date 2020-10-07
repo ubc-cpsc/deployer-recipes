@@ -10,7 +10,7 @@ require_once __DIR__ . '/base.php';
 
 // Ensure bootstrap cache is writable for the apache user as it represents the
 // state of classes and artisan needs to write to it too.
-add('writable_dirs', [
+set('writable_dirs', [
   'bootstrap/cache',
 ]);
 
