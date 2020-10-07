@@ -10,8 +10,8 @@ require_once __DIR__ . '/base.php';
 
 // Build the vendor directory locally.
 task('deploy:artisan', function () {
-  invoke('artisan:optimize:clear');
   invoke('artisan:storage:link');
+  invoke('artisan:optimize:clear');
   invoke('artisan:config:cache');
   invoke('artisan:migrate');
   invoke('artisan:route:cache');
