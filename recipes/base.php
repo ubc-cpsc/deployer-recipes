@@ -13,6 +13,10 @@ set('deploy_path', '/var/www/{{application}}');
 set('git_tty', TRUE);
 set('allow_anonymous_stats', FALSE);
 
+// Set writable for w-html and w-run as part of www-content group.
+set('writable_mode', 'chmod');
+set('writable_chmod_mode', '2770');
+
 // Prepare vendor files to be synced.
 set('rsync_src', realpath('.') . '/.build/current');
 set('rsync', [
@@ -70,6 +74,7 @@ task('deploy', [
   'rsync:warmup',
   'rsync',
   'deploy:shared',
+  'deploy:writable',
   'deploy:symlink',
   'deploy:unlock',
   'cleanup',

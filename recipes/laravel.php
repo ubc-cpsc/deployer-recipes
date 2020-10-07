@@ -8,12 +8,6 @@ require_once 'recipe/laravel.php';
 // Overwrite deploy task.
 require_once __DIR__ . '/base.php';
 
-// Ensure bootstrap cache is writable for the apache user as it represents the
-// state of classes and artisan needs to write to it too.
-set('writable_dirs', [
-  'bootstrap/cache',
-]);
-
 // Build the vendor directory locally.
 task('deploy:artisan', function () {
   invoke('artisan:storage:link');
@@ -23,10 +17,22 @@ task('deploy:artisan', function () {
   invoke('artisan:route:cache');
 });
 
+// Laravel writable dirs (without storage because it's mounted).
+set('writable_dirs', [
+    'bootstrap/cache',
+    'storage/app',
+    'storage/app/public',
+    'storage/framework',
+    'storage/framework/cache',
+    'storage/framework/sessions',
+    'storage/framework/views',
+    'storage/logs',
+]);
+
 // Additional deploy steps for Laravel.
 // Before deploy:symlink since there is a local task call too, we use
-// after deploy:shared.
-after('deploy:shared', 'deploy:artisan');
+// after deploy:writable.
+after('deploy:writable', 'deploy:artisan');
 
 /**
  * Helper tasks overrides from laravel-deployer.
