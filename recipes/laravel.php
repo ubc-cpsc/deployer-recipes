@@ -8,6 +8,12 @@ require_once 'recipe/laravel.php';
 // Overwrite deploy task.
 require_once __DIR__ . '/base.php';
 
+// Ensure bootstrap cache is writable for the apache user as it represents the
+// state of classes and artisan needs to write to it too.
+add('writable_dirs', [
+  'bootstrap/cache',
+]);
+
 // Build the vendor directory locally.
 task('deploy:artisan', function () {
   invoke('artisan:storage:link');
