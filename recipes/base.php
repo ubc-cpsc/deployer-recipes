@@ -16,6 +16,7 @@ set('allow_anonymous_stats', FALSE);
 // Set writable for w-html and w-run as part of www-content group.
 set('writable_mode', 'chmod');
 set('writable_chmod_mode', '2770');
+set('writable_chmod_recursive', FALSE);
 
 // Prepare vendor files to be synced.
 set('rsync_src', realpath('.') . '/.build/current');
