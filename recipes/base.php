@@ -3,6 +3,7 @@
 namespace Deployer;
 
 require_once 'recipe/common.php';
+require_once __DIR__ . '/cachetool.php';
 require_once 'recipe/rsync.php';
 
 set('default_stage', 'staging');
@@ -65,6 +66,14 @@ task('build:cleanup', function () {
   run("$sudo rm -rf {{deploy_path}}", $runOpts);
 })->local();
 
+// Clear OPcache and realpath caches.
+task('deploy:cachetool', function () {
+  set('cachetool', '127.0.0.1:9074');
+  invoke('cachetool:clear:stat');
+  invoke('cachetool:clear:opcache');
+});
+
+
 task('deploy', [
   'build',
   'deploy:info',
@@ -77,6 +86,7 @@ task('deploy', [
   'deploy:shared',
   'deploy:writable',
   'deploy:symlink',
+  'deploy:cachetool',
   'deploy:unlock',
   'cleanup',
   'build:cleanup',
