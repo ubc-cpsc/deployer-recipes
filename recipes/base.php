@@ -19,6 +19,9 @@ set('writable_mode', 'chmod');
 set('writable_chmod_mode', '2770');
 set('writable_chmod_recursive', FALSE);
 
+// Cachetool fcgi flag for PHP 7.4.
+set('cachetool', '127.0.0.1:9074');
+
 // Prepare vendor files to be synced.
 set('rsync_src', realpath('.') . '/.build/current');
 set('rsync', [
@@ -68,11 +71,9 @@ task('build:cleanup', function () {
 
 // Clear OPcache and realpath caches.
 task('deploy:cachetool', function () {
-  set('cachetool', '127.0.0.1:9074');
   invoke('cachetool:clear:stat');
   invoke('cachetool:clear:opcache');
 });
-
 
 task('deploy', [
   'build',
