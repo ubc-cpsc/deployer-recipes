@@ -90,7 +90,8 @@ task('deploy', [
   'deploy:lock',
   'deploy:release',
   'deploy:update_code',
-  'rsync:warmup',
+  // Removed due to permission carry over.
+  //'rsync:warmup',
   'rsync',
   'deploy:shared',
   'deploy:writable',
