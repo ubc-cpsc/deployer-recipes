@@ -15,6 +15,7 @@ task('deploy:artisan', function () {
   invoke('artisan:config:cache');
   invoke('artisan:migrate');
   invoke('artisan:route:cache');
+  invoke('artisan:event:cache');
 });
 
 // Laravel writable dirs (without storage because it's mounted).
