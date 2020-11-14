@@ -20,9 +20,8 @@
         "discard-changes": true,
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.4.12"
+            "php": "7.4.9"
         },
-        "preferred-install": "source",
         "sort-packages": true
     },
     "require-dev": {
