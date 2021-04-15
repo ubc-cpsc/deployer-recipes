@@ -7,7 +7,7 @@ require_once __DIR__ . '/cachetool.php';
 require_once 'recipe/rsync.php';
 
 set('default_stage', 'staging');
-set('keep_releases', 10);
+set('keep_releases', 5);
 set('deploy_path', '/var/www/{{application}}');
 
 // Allocate tty for git clone. Default value is false.
