@@ -27,3 +27,40 @@ task('drupal:settings', function () {
     run("cp -rv {{release_path}}/$default_file $sharedPath/$file");
   }
 });
+
+/**
+ * Run drush commands.
+ *
+ * Supported options:
+ * - 'skipIfNoEnv': Skip and warn the user if `.env` file is non existing or empty.
+ * - 'failIfNoEnv': Fail the command if `.env` file is non existing or empty.
+ * - 'runInCurrent': Run the drush command in the current directory.
+ * - 'showOutput': Show the output of the command if given.
+ *
+ * @param string $command The drush command (with cli options if any).
+ * @param array $options The options that define the behaviour of the command.
+ * @return callable A function that can be used as a task.
+ */
+function drush($command, $options = [])
+{
+    return function() use ($command, $options) {
+        if (in_array('failIfNoEnv', $options) && ! test('[ -s {{release_path}}/.env ]')) {
+            throw new \Exception('Your .env file is empty! Cannot proceed.');
+        }
+
+        if (in_array('skipIfNoEnv', $options) && ! test('[ -s {{release_path}}/.env ]')) {
+            writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your .env file is empty! Skipping...</>");
+            return;
+        }
+
+        $drush = in_array('runInCurrent', $options)
+            ? '{{deploy_path}}/current/drush'
+            : '{{release_path}}/drush';
+
+        $output = run("{{bin/php}} $drush $command");
+
+        if (in_array('showOutput', $options)) {
+            writeln("<info>$output</info>");
+        }
+    };
+}
