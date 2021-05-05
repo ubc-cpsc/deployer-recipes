@@ -29,6 +29,15 @@ task('drupal:settings', function () {
 });
 
 /**
+ * Helper tasks for drush.
+ */
+desc('Run database updates');
+task('drush:updatedb', drush('updb -y', ['skipIfNoEnv', 'showOutput']))->once();
+
+desc('Import latest config');
+task('drush:config:import', drush('config:import -y', ['skipIfNoEnv', 'showOutput']))->once();
+
+/**
  * Run drush commands.
  *
  * Supported options:

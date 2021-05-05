@@ -34,10 +34,8 @@ desc('Execute config import');
 task('deploy:config_import', function () {
   cd('{{release_path}}/public');
   // Run updb before config import to catch up schema.
-  $output = run('drush -y updb');
-  writeln("<info>$output</info>");
-  $output = run('drush -y config:import');
-  writeln("<info>$output</info>");
+  invoke('drush:updatedb');
+  invoke('drush:config:import');
 })->once();
 
 // Additional database update and config import steps for Drupal.
