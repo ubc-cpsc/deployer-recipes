@@ -163,7 +163,14 @@ function artisan($command, $options = [])
     };
 }
 
-
+/**
+ * Compare Laravel versions.
+ *
+ * @param $version
+ * @param $comparator
+ *
+ * @return bool|int
+ */
 function laravel_version_compare($version, $comparator)
 {
     return version_compare(get('laravel_version'), $version, $comparator);
