@@ -43,6 +43,7 @@ task('drush:config:import', drush('config:import -y', ['skipIfNoEnv', 'showOutpu
  * Supported options:
  * - 'skipIfNoEnv': Skip and warn the user if `.env` file is non existing or empty.
  * - 'failIfNoEnv': Fail the command if `.env` file is non existing or empty.
+ * - 'runInCurrent': Run the drush command in the current directory.
  * - 'showOutput': Show the output of the command if given.
  *
  * @param string $command The drush command (with cli options if any).
@@ -61,6 +62,11 @@ function drush($command, $options = [])
             return;
         }
 
+        $path = in_array('runInCurrent', $options)
+            ? '{{deploy_path}}/current'
+            : '{{release_path}}';
+
+        cd($path);
         $output = run("drush $command");
 
         if (in_array('showOutput', $options)) {
