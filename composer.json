@@ -1,7 +1,7 @@
 {
     "name": "ubccs/recipes",
     "license": "MIT",
-    "description": "UBCCS deployer recipes",
+    "description": "UBC CS deployer recipes",
     "type": "library",
     "keywords": [
         "deployer",
@@ -28,7 +28,6 @@
         "deployer/deployer": "^6.3"
     },
     "require": {
-        "php": "~7.0",
-        "deployer/recipes": "^6.2"
+        "php": "~7.0"
     }
 }
