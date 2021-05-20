@@ -28,6 +28,6 @@
         "deployer/deployer": "^6.3"
     },
     "require": {
-        "php": "~7.0"
+        "php": ">=7.4.0"
     }
 }
