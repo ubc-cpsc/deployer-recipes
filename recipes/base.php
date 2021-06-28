@@ -72,9 +72,13 @@ task('build:cleanup', function () {
 // Clear OPcache and realpath caches.
 task('deploy:cachetool', function () {
   $fcgi = get('cachetool');
-  list($SERVER, $PORT) = explode(':', $fcgi);
+  $SERVER = '';
+  $PORT = '';
+  if (strpos($fcgi, ':') !== FALSE) {
+    list($SERVER, $PORT) = explode(':', $fcgi);
+  }
   // Check to see that we can connect to the PHP-FPM port we're trying to clear.
-  if (run("</dev/tcp/$SERVER/$PORT; if [ $? -eq 0 ]; then echo 'true'; fi") !== 'true') {
+  if ($PORT && run("</dev/tcp/$SERVER/$PORT; if [ $? -eq 0 ]; then echo 'true'; fi") !== 'true') {
     writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your server doesn't have PHP-FPM running on port $PORT Skipping...</>");
     return;
   }
