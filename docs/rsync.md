@@ -5,7 +5,7 @@
 Install with composer
 
 ```bash
-composer require deployer/recipes --dev
+composer require ubc-cpsc/deployer-recipes --dev
 ```
 
 Add to your _deploy.php_

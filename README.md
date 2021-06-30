@@ -5,7 +5,7 @@ This repository contains UBC CS department recipes to integrate with deployer.
 ## Installing
 
 ~~~sh
-composer require ubc-cpsc/recipes --dev
+composer require ubc-cpsc/deployer-recipes --dev
 ~~~
 
 Include recipes in `deploy.php` file.

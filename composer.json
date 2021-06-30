@@ -1,5 +1,5 @@
 {
-    "name": "ubc-cpsc/recipes",
+    "name": "ubc-cpsc/deployer-recipes",
     "license": "MIT",
     "description": "UBC CS deployer recipes",
     "type": "library",
