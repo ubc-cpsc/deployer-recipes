@@ -19,9 +19,6 @@ set('writable_mode', 'chmod');
 set('writable_chmod_mode', '2770');
 set('writable_chmod_recursive', FALSE);
 
-// Cachetool fcgi flag for PHP 7.4.
-set('cachetool', '127.0.0.1:9074');
-
 // Prepare vendor files to be synced.
 set('rsync_src', realpath('.') . '/.build/current');
 set('rsync', [
@@ -69,6 +66,13 @@ task('build:cleanup', function () {
   run("$sudo rm -rf {{deploy_path}}", $runOpts);
 })->local();
 
+set('bin/ss', function () {
+  return locateBinaryPath('ss');
+});
+set('bin/grep', function () {
+  return locateBinaryPath('grep');
+});
+
 // Clear OPcache and realpath caches.
 task('deploy:cachetool', function () {
   $fcgi = get('cachetool');
@@ -77,9 +81,15 @@ task('deploy:cachetool', function () {
   if (strpos($fcgi, ':') !== FALSE) {
     list($SERVER, $PORT) = explode(':', $fcgi);
   }
+
   // Check to see that we can connect to the PHP-FPM port we're trying to clear.
   if ($PORT && run("</dev/tcp/$SERVER/$PORT; if [ $? -eq 0 ]; then echo 'true'; fi") !== 'true') {
-    writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your server doesn't have PHP-FPM running on port $PORT Skipping...</>");
+    writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your server doesn't have PHP-FPM running on port $PORT. Skipping...</>");
+    return;
+  }
+  // Check to see if we have a socket open that has 'php' in the name.
+  elseif (!$PORT && run("{{bin/ss}} -xa | {{bin/grep}} php -q; if [ $? -eq 0 ]; then echo 'true'; fi") !== 'true') {
+    writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your server doesn't have PHP-FPM running on a socket. Skipping...</>");
     return;
   }
 
