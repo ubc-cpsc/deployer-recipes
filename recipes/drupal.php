@@ -5,6 +5,11 @@ namespace Deployer;
 require_once __DIR__ . '/base.php';
 
 // Shared directories and files.
+add('shared_files', [
+  '.env',
+]);
+
+// Shared directories and files.
 set('shared_dirs', [
   'private',
   'public/sites/default/files',
