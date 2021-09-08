@@ -35,7 +35,7 @@ desc('Run database updates');
 task('drush:updatedb', drush('updb -y', ['skipIfNoEnv', 'showOutput']))->once();
 
 desc('Import latest config');
-task('drush:config:import', drush('config:import -y', ['skipIfNoEnv', 'showOutput']))->once();
+task('drush:config:import', drush('config:import', ['skipIfNoEnv', 'showOutput']))->once();
 
 /**
  * Run drush commands.
