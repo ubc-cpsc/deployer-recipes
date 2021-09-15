@@ -68,7 +68,7 @@ function drush($command, $options = [])
             : '{{release_path}}';
 
         cd($path);
-        $output = run("drush $command");
+        $output = run("drush $command", ['tty' => TRUE]);
 
         if (in_array('showOutput', $options)) {
             writeln("<info>$output</info>");
