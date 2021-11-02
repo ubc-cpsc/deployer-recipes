@@ -18,22 +18,9 @@ task('deploy:artisan', function () {
   invoke('artisan:event:cache');
 });
 
-// Laravel writable dirs (without storage because it's mounted).
-set('writable_dirs', [
-    'bootstrap/cache',
-    'storage/app',
-    'storage/app/public',
-    'storage/framework',
-    'storage/framework/cache',
-    'storage/framework/sessions',
-    'storage/framework/views',
-    'storage/logs',
-]);
-
 // Additional deploy steps for Laravel.
-// Before deploy:symlink since there is a local task call too, we use
-// after deploy:writable.
-after('deploy:writable', 'deploy:artisan');
+// Before deploy:symlink since there is a local task call too.
+before('deploy:symlink', 'deploy:artisan');
 
 /**
  * Helper tasks overrides from laravel-deployer.

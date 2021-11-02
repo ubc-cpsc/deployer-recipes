@@ -108,7 +108,9 @@ task('deploy', [
   //'rsync:warmup',
   'rsync',
   'deploy:shared',
-  'deploy:writable',
+  // Removed, web server w-run user using chmod with ownership of w-html
+  // yields permission issues, and visa versa.
+  //'deploy:writable',
   'deploy:symlink',
   'deploy:cachetool',
   'deploy:unlock',
