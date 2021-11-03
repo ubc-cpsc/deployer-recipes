@@ -8,7 +8,14 @@ require_once 'recipe/laravel.php';
 // Overwrite deploy task.
 require_once __DIR__ . '/base.php';
 
+// Override shared directories.
+set('shared_dirs', [
+  'bootstrap/cache',
+  'storage',
+]);
+
 // Build the vendor directory locally.
+desc('Run artisan commands');
 task('deploy:artisan', function () {
   invoke('artisan:storage:link');
   invoke('artisan:optimize:clear');
@@ -18,9 +25,38 @@ task('deploy:artisan', function () {
   invoke('artisan:event:cache');
 });
 
+/**
+ * Create storage directories.
+ */
+desc('Make initial storage directories.');
+task('deploy:create_storage_dirs', function () {
+  $writable_dirs = [
+    'bootstrap/cache',
+    'storage/app',
+    'storage/app/public',
+    'storage/framework',
+    'storage/framework/cache',
+    'storage/framework/sessions',
+    'storage/framework/views',
+    'storage/logs',
+  ];
+
+  $sharedPath = "{{deploy_path}}/shared";
+  foreach ($writable_dirs as $dir) {
+    // Check if shared dir does not exist.
+    if (!test("[ -d $sharedPath/$dir ]")) {
+      // Create shared dir if it does not exist.
+      run("umask 0002; mkdir -p $sharedPath/$dir");
+    }
+  }
+
+})->once();
+// Before deploy:shared since deploy:symlink is a local task call too and we
+// only want this on remote servers.
+after('deploy:shared', 'deploy:create_storage_dirs');
+
 // Additional deploy steps for Laravel.
-// Before deploy:symlink since there is a local task call too.
-before('deploy:symlink', 'deploy:artisan');
+after('deploy:create_storage_dirs', 'deploy:artisan');
 
 /**
  * Helper tasks overrides from laravel-deployer.
