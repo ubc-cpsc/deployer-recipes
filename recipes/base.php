@@ -53,7 +53,7 @@ task('build', function () {
   invoke('deploy:update_code');
   invoke('deploy:vendors');
   invoke('deploy:symlink');
-})->local();
+});
 
 // Remove the build directory after deploy.
 task('build:cleanup', function () {
@@ -67,10 +67,10 @@ task('build:cleanup', function () {
 })->local();
 
 set('bin/ss', function () {
-  return locateBinaryPath('ss');
+  return which('ss');
 });
 set('bin/grep', function () {
-  return locateBinaryPath('grep');
+  return which('grep');
 });
 
 // Clear OPcache and realpath caches.

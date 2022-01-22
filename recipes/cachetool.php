@@ -5,7 +5,7 @@ namespace Deployer;
 set('cachetool', '');
 set('cachetool_args', '');
 set('bin/cachetool', function () {
-  return locateBinaryPath('cachetool');
+  return which('cachetool');
 });
 
 desc('Clears the file status cache, including the realpath cache');

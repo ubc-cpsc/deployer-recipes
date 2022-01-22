@@ -8,9 +8,10 @@
         "recipes",
         "deploy",
         "deployment",
-        "drupal"
+        "drupal",
+        "laravel"
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "rc",
     "autoload": {
         "files": [
             "autoload.php"
@@ -25,7 +26,7 @@
         "sort-packages": true
     },
     "require-dev": {
-        "deployer/deployer": "^6.3"
+        "deployer/deployer": "^7.0"
     },
     "require": {
         "php": ">=7.4.0"
