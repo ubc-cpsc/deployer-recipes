@@ -38,7 +38,7 @@ set('rsync', [
 
 // Build the vendor directory locally.
 task('build', function () {
-  $stage = input()->getArgument('stage');
+  $stage = get('labels')['stage'] ?? NULL;
 
   // As long as the branch isn't explicitly passed in the command line,
   // use master for production stage.
@@ -63,8 +63,8 @@ task('build:cleanup', function () {
   if ($sudo) {
     $runOpts['tty'] = get('cleanup_tty', FALSE);
   }
-  run("$sudo rm -rf {{deploy_path}}", $runOpts);
-})->local();
+  runLocally("$sudo rm -rf {{deploy_path}}", $runOpts);
+})->once();
 
 set('bin/ss', function () {
   return which('ss');
@@ -100,7 +100,7 @@ task('deploy:cachetool', function () {
 task('deploy', [
   'build',
   'deploy:info',
-  'deploy:prepare',
+  'deploy:setup',
   'deploy:lock',
   'deploy:release',
   'deploy:update_code',
@@ -114,9 +114,12 @@ task('deploy', [
   'deploy:symlink',
   'deploy:cachetool',
   'deploy:unlock',
-  'cleanup',
-  'build:cleanup',
+  'deploy:cleanup',
+  'deploy:success',
 ]);
+
+// Clean up the local build.
+after('deploy:cleanup', 'build:cleanup');
 
 // If deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
