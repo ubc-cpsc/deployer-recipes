@@ -8,6 +8,8 @@ require_once 'recipe/laravel.php';
 // Overwrite deploy task.
 require_once __DIR__ . '/base.php';
 
+add('recipes', ['laravel']);
+
 // Override shared directories.
 set('shared_dirs', [
   'bootstrap/cache',

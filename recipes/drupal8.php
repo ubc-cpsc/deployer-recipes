@@ -4,6 +4,8 @@ namespace Deployer;
 
 require_once __DIR__ . '/drupal.php';
 
+add('recipes', ['drupal8']);
+
 // Using filter because the order of the exculsions matters.
 // This is the option order:
 //   {{rsync_options}}{{rsync_excludes}}{{rsync_includes}}{{rsync_filter}}

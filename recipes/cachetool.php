@@ -2,6 +2,8 @@
 
 namespace Deployer;
 
+add('recipes', ['cachetool']);
+
 set('cachetool', '');
 set('cachetool_args', '');
 set('bin/cachetool', function () {

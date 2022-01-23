@@ -15,6 +15,8 @@ namespace Deployer;
 use Deployer\Host\Localhost;
 use Deployer\Task\Context;
 
+add('recipes', ['rsync']);
+
 set('rsync', [
     'exclude' => [
         '.git',
@@ -91,7 +93,6 @@ set('rsync_options', function () {
     }
     return implode(' ', $optionsRsync);
 });
-
 
 desc('Warmup remote Rsync target');
 task('rsync:warmup', function() {

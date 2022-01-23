@@ -4,6 +4,8 @@ namespace Deployer;
 
 require_once __DIR__ . '/base.php';
 
+add('recipes', ['drupal']);
+
 // Shared directories and files.
 set('shared_dirs', [
   'private',
