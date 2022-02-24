@@ -36,6 +36,21 @@ set('rsync', [
   'timeout' => 300,
 ]);
 
+function whichLocally(string $name): string {
+  $nameEscaped = escapeshellarg($name);
+
+  // Try `command`, should cover all Bourne-like shells
+  // Try `which`, should cover most other cases
+  // Fallback to `type` command, if the rest fails
+  $path = runLocally("command -v $nameEscaped || which $nameEscaped || type -p $nameEscaped");
+  if (empty($path)) {
+    throw new \RuntimeException("Can't locate [$nameEscaped] - neither of [command|which|type] commands are available");
+  }
+
+  // Deal with issue when `type -p` outputs something like `type -ap` in some implementations
+  return trim(str_replace("$name is", "", $path));
+}
+
 // Build the vendor directory locally.
 task('build', function () {
   $stage = get('labels')['stage'] ?? NULL;
@@ -48,22 +63,31 @@ task('build', function () {
   }
 
   set('deploy_path', realpath('.') . '/.build');
-  invoke('deploy:prepare');
-  invoke('deploy:release');
-  invoke('deploy:update_code');
-  invoke('deploy:vendors');
-  invoke('deploy:symlink');
-});
+
+  // Invoke deploy:update_code.
+  $git = whichLocally('git');
+  $target = get('target');
+
+  runLocally("[ -d {{deploy_path}} ] || mkdir -p {{deploy_path}}");
+
+  // Update all tracking branches.
+  runLocally("$git remote update 2>&1");
+
+  // Archive target branch/tag/revision to deploy_path.
+  runLocally("$git archive $target | tar -x -f - -C {{deploy_path}} 2>&1");
+
+  // Invoke deploy:vendors.
+  $composer = whichLocally('composer');
+  if (!whichLocally('unzip')) {
+    warning('To speed up composer installation setup "unzip" command with PHP zip extension.');
+  }
+  runLocally("cd {{deploy_path}} && $composer {{composer_action}} {{composer_options}} 2>&1");
+})->once();
 
 // Remove the build directory after deploy.
 task('build:cleanup', function () {
   set('deploy_path', realpath('.') . '/.build');
-  $sudo = get('cleanup_use_sudo') ? 'sudo' : '';
-  $runOpts = [];
-  if ($sudo) {
-    $runOpts['tty'] = get('cleanup_tty', FALSE);
-  }
-  runLocally("$sudo rm -rf {{deploy_path}}", $runOpts);
+  runLocally('rm -rf {{deploy_path}}');
 })->once();
 
 set('bin/ss', function () {
