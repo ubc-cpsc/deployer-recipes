@@ -20,7 +20,7 @@ set('writable_chmod_mode', '2770');
 set('writable_chmod_recursive', FALSE);
 
 // Prepare vendor files to be synced.
-set('rsync_src', realpath('.') . '/.build/current');
+set('rsync_src', realpath('.') . '/.build');
 set('rsync', [
   'exclude' => [
     '.git',
@@ -53,41 +53,32 @@ function whichLocally(string $name): string {
 
 // Build the vendor directory locally.
 task('build', function () {
-  $stage = get('labels')['stage'] ?? NULL;
-
-  // As long as the branch isn't explicitly passed in the command line,
-  // use master for production stage.
-  $branch = input()->getOption('branch');
-  if ($stage == 'production' && !$branch) {
-    set('branch', 'master');
-  }
-
-  set('deploy_path', realpath('.') . '/.build');
+  $build_path = realpath('.') . '/.build';
 
   // Invoke deploy:update_code.
   $git = whichLocally('git');
   $target = get('target');
 
-  runLocally("[ -d {{deploy_path}} ] || mkdir -p {{deploy_path}}");
+  runLocally("[ -d $build_path ] || mkdir -p $build_path");
 
   // Update all tracking branches.
   runLocally("$git remote update 2>&1");
 
   // Archive target branch/tag/revision to deploy_path.
-  runLocally("$git archive $target | tar -x -f - -C {{deploy_path}} 2>&1");
+  runLocally("$git archive $target | tar -x -f - -C $build_path 2>&1");
 
   // Invoke deploy:vendors.
   $composer = whichLocally('composer');
   if (!whichLocally('unzip')) {
     warning('To speed up composer installation setup "unzip" command with PHP zip extension.');
   }
-  runLocally("cd {{deploy_path}} && $composer {{composer_action}} {{composer_options}} 2>&1");
+  runLocally("cd $build_path && $composer {{composer_action}} {{composer_options}} 2>&1");
 })->once();
 
 // Remove the build directory after deploy.
 task('build:cleanup', function () {
-  set('deploy_path', realpath('.') . '/.build');
-  runLocally('rm -rf {{deploy_path}}');
+  $build_path = realpath('.') . '/.build';
+  runLocally('rm -rf ' . $build_path);
 })->once();
 
 set('bin/ss', function () {
@@ -120,6 +111,28 @@ task('deploy:cachetool', function () {
 
   invoke('cachetool:clear:stat');
   invoke('cachetool:clear:opcache');
+});
+
+set('branch', function () {
+  $stage = get('labels')['stage'] ?? NULL;
+  if ($stage == 'production') {
+    $production_branches = [
+      'latest',
+      'master',
+      'main',
+    ];
+    foreach ($production_branches as $target_branch) {
+      $target_branch_exists = testLocally('[ -n "$(git rev-parse --verify --quiet ' . $target_branch . ')" ]');
+      if ($target_branch_exists) {
+        info("Setting Production branch: <fg=magenta;options=bold>$target_branch</>");
+        return $target_branch;
+      }
+    }
+    throw error('No production branches available: ' . implode(', ', $production_branches));
+  }
+
+  // Default.
+  return 'HEAD';
 });
 
 task('deploy', [
