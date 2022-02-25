@@ -117,9 +117,9 @@ set('branch', function () {
   $stage = get('labels')['stage'] ?? NULL;
   if ($stage == 'production') {
     $production_branches = [
+      'main',
       'latest',
       'master',
-      'main',
     ];
     foreach ($production_branches as $target_branch) {
       $target_branch_exists = testLocally('[ -n "$(git rev-parse --verify --quiet ' . $target_branch . ')" ]');
