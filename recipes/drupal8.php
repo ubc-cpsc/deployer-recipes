@@ -25,14 +25,8 @@ add('rsync', [
   ],
 ]);
 
-desc('Execute config import');
-task('deploy:config_import', function () {
-  // Run updb before config import to catch up schema.
-  invoke('drush:updatedb');
-  invoke('drush:config:import');
+desc('Execute database update & config import');
+task('deploy:drush', function () {
+  // https://www.drush.org/latest/deploycommand/
+  invoke('drush:deploy');
 })->once();
-
-// Additional database update and config import steps for Drupal.
-// Before deploy:symlink since there is a local task call too, we use
-// after deploy:shared.
-after('deploy:shared', 'deploy:config_import');

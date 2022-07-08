@@ -14,6 +14,17 @@ set('shared_files', [
   'public/sites/default/settings.local.php',
 ]);
 
+desc('Execute database updates');
+task('deploy:drush', function () {
+  // Run updb before config import to catch up schema.
+  invoke('drush:updatedb');
+})->once();
+
+// Additional database update and config import steps for Drupal.
+// Before deploy:symlink since there is a local task call too, we use
+// after deploy:shared.
+after('deploy:shared', 'deploy:drush');
+
 // Duplicate our example.settings.local.php.
 task('drupal:settings', function () {
   $sharedPath = "{{deploy_path}}/shared";
@@ -37,6 +48,9 @@ task('drush:updatedb', drush('updb -y', ['skipIfNoEnv', 'showOutput']))->once();
 
 desc('Import latest config');
 task('drush:config:import', drush('config:import', ['skipIfNoEnv', 'showOutput']))->once();
+
+desc('Deploy latest db updates and config');
+task('drush:deploy', drush('deploy', ['skipIfNoEnv', 'showOutput']))->once();
 
 /**
  * Run drush commands.
