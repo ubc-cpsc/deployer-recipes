@@ -153,11 +153,9 @@ task('deploy', [
   'deploy:cachetool',
   'deploy:unlock',
   'deploy:cleanup',
+  'build:cleanup',
   'deploy:success',
 ]);
-
-// Clean up the local build.
-after('deploy:cleanup', 'build:cleanup');
 
 // If deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
