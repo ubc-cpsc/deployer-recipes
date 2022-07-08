@@ -152,7 +152,7 @@ task('deploy', [
   'deploy:symlink',
   'deploy:cachetool',
   'deploy:unlock',
-  'deploy:cleanup',
+  'cleanup',
   'build:cleanup',
   'deploy:success',
 ]);
