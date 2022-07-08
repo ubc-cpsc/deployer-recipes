@@ -79,7 +79,7 @@ set('rsync',[
 
 ### Sample configurations:
 
-This is default configuration: 
+This is default configuration:
 
 ```php
 set('rsync_src', __DIR__);
@@ -111,7 +111,7 @@ host('hostname')
 - `rsync:warmup` task
 
     If Your deploy task looks like:
-    
+
     ```php
     task('deploy', [
         'deploy:prepare',
@@ -119,8 +119,8 @@ host('hostname')
         'rsync',
         'deploy:vendors',
         'deploy:symlink',
-        'cleanup',
+        'deploy:cleanup',
     ])->desc('Deploy your project');
     ```
-    
+
     And Your `rsync_dest` is set to `{{release_path}}` then You could add this task to run before `rsync` task or after `deploy:release`, whatever is more convenient.
