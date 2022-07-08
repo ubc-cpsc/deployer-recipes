@@ -2,9 +2,9 @@
 
 namespace Deployer;
 
-require_once 'recipe/common.php';
-require_once __DIR__ . '/cachetool.php';
-require_once __DIR__ . '/rsync.php';
+import('recipe/common.php');
+import(__DIR__ . '/cachetool.php');
+import('contrib/rsync.php');
 
 set('default_stage', 'staging');
 set('keep_releases', 5);
