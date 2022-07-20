@@ -82,11 +82,12 @@ function drush($command, $options = [])
         $path = in_array('runInCurrent', $options)
             ? '{{deploy_path}}/current'
             : '{{release_path}}';
-
-        if (! test("[ -s $path/vendor/bin/drush ]")) {
+        cd($path);
+        if (! test("[ -s ./vendor/bin/drush ]")) {
           throw new \Exception('Your drush is missing from vendor/bin! Cannot proceed.');
         }
-        $output = run("$path/vendor/bin/drush $command", ['tty' => TRUE]);
+
+        $output = run("./vendor/bin/drush $command", ['tty' => TRUE]);
 
         if (in_array('showOutput', $options)) {
             writeln("<info>$output</info>");
