@@ -11,7 +11,7 @@
         "drupal",
         "laravel"
     ],
-    "minimum-stability": "RC",
+    "minimum-stability": "stable",
     "autoload": {
         "files": [
             "autoload.php"
@@ -20,9 +20,6 @@
     "config": {
         "discard-changes": true,
         "optimize-autoloader": true,
-        "platform": {
-            "php": "7.4.9"
-        },
         "sort-packages": true
     },
     "require-dev": {
