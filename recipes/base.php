@@ -38,15 +38,6 @@ set('rsync', [
 
 // Build the vendor directory locally.
 task('build', function () {
-  $stage = input()->getArgument('stage');
-
-  // As long as the branch isn't explicitly passed in the command line,
-  // use master for production stage.
-  $branch = input()->getOption('branch');
-  if ($stage == 'production' && !$branch) {
-    set('branch', 'master');
-  }
-
   set('deploy_path', realpath('.') . '/.build');
   invoke('deploy:prepare');
   invoke('deploy:release');
@@ -54,6 +45,39 @@ task('build', function () {
   invoke('deploy:vendors');
   invoke('deploy:symlink');
 })->local();
+
+set('branch', function () {
+  if (input()->hasOption('branch') && !empty(input()->getOption('branch'))) {
+    return input()->getOption('branch');
+  }
+
+  // As long as the branch isn't explicitly passed in the command line,
+  // use a production branch for production stage.
+  if (input()->getArgument('stage') == 'production') {
+    $production_branches = [
+      'main',
+      'latest',
+      'master',
+    ];
+    foreach ($production_branches as $target_branch) {
+      $target_branch_exists = testLocally('[ -n "$(git rev-parse --verify --quiet ' . $target_branch . ')" ]');
+      if ($target_branch_exists) {
+        writeln("Setting Production branch: <fg=magenta;options=bold>$target_branch</>");
+        return $target_branch;
+      }
+    }
+    throw new \InvalidArgumentException('No production branches available: ' . implode(', ', $production_branches));
+  }
+
+  try {
+    $branch = runLocally('git rev-parse --abbrev-ref HEAD');
+  } catch (\Throwable $exception) {
+    $branch = null;
+  }
+
+  // Default.
+  return $branch ?: 'HEAD';
+});
 
 // Remove the build directory after deploy.
 task('build:cleanup', function () {
