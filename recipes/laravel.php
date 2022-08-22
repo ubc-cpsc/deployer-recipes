@@ -3,7 +3,7 @@
 namespace Deployer;
 
 // Include artisan tasks.
-require_once 'recipe/laravel.php';
+import('recipe/laravel.php');
 
 // Overwrite deploy task.
 require_once __DIR__ . '/base.php';
