@@ -15,6 +15,7 @@ set('shared_dirs', [
   'bootstrap/cache',
   'storage',
 ]);
+set('shared_files', ['.env']);
 
 // Build the vendor directory locally.
 desc('Run artisan commands');
