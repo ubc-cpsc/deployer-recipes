@@ -22,6 +22,7 @@ desc('Run artisan commands');
 task('deploy:artisan', function () {
   // Create the symbolic links configured for the application.
   invoke('artisan:storage:link');
+
   // Remove all bootstrap/cache files.
   invoke('artisan:optimize:clear');
 
@@ -29,9 +30,13 @@ task('deploy:artisan', function () {
   // invoke('artisan:config:cache');
 
   // Create a route cache file for faster route registration.
-  invoke('artisan:route:cache');
+  // Disabled because when built by artisan it creates "405 Method Not Allowed"
+  // errors.
+  // invoke('artisan:route:cache');
+
   // Discover and cache the application's events and listeners.
   invoke('artisan:event:cache');
+
   // Compile all the application's Blade templates.
   invoke('artisan:view:cache');
 
