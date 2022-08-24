@@ -11,10 +11,7 @@ require_once __DIR__ . '/base.php';
 add('recipes', ['laravel']);
 
 // Override shared directories.
-set('shared_dirs', [
-  'bootstrap/cache',
-  'storage',
-]);
+set('shared_dirs', ['storage']);
 set('shared_files', ['.env']);
 
 // Build the vendor directory locally.
