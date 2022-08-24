@@ -59,7 +59,7 @@ task('deploy:create_storage_dirs', function () {
 after('deploy:shared', 'deploy:create_storage_dirs');
 
 // Additional deploy steps for Laravel.
-after('deploy:create_storage_dirs', 'deploy:artisan');
+before('deploy:symlink', 'deploy:artisan');
 
 /**
  * Helper tasks overrides from laravel-deployer.

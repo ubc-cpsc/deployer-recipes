@@ -23,9 +23,7 @@ task('deploy:drush', function () {
 })->once();
 
 // Additional database update and config import steps for Drupal.
-// Before deploy:symlink since there is a local task call too, we use
-// after deploy:shared.
-after('deploy:shared', 'deploy:drush');
+before('deploy:symlink', 'deploy:drush');
 
 // Duplicate our example.settings.local.php.
 task('drupal:settings', function () {

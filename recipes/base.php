@@ -84,7 +84,7 @@ set('bin/grep', function () {
   return which('grep');
 });
 
-// Clear OPcache and realpath caches.
+// Clear OPCache and realpath caches.
 task('deploy:cachetool', function () {
   $fcgi = get('cachetool');
   $SERVER = '';
