@@ -20,43 +20,24 @@ set('shared_files', ['.env']);
 // Build the vendor directory locally.
 desc('Run artisan commands');
 task('deploy:artisan', function () {
+  // Create the symbolic links configured for the application.
   invoke('artisan:storage:link');
+  // Remove all bootstrap/cache files.
   invoke('artisan:optimize:clear');
-  invoke('artisan:config:cache');
-  invoke('artisan:migrate');
+
+  // Don't build bootstrap/cache as per https://stackoverflow.com/questions/29729543/how-to-stop-laravel-5-from-caching-configurations/29729639#29729639
+  // invoke('artisan:config:cache');
+
+  // Create a route cache file for faster route registration.
   invoke('artisan:route:cache');
+  // Discover and cache the application's events and listeners.
   invoke('artisan:event:cache');
+  // Compile all the application's Blade templates.
+  invoke('artisan:view:cache');
+
+  // Run the database migrations.
+  invoke('artisan:migrate');
 });
-
-/**
- * Create storage directories.
- */
-desc('Make initial storage directories.');
-task('deploy:create_storage_dirs', function () {
-  $writable_dirs = [
-    'bootstrap/cache',
-    'storage/app',
-    'storage/app/public',
-    'storage/framework',
-    'storage/framework/cache',
-    'storage/framework/sessions',
-    'storage/framework/views',
-    'storage/logs',
-  ];
-
-  $sharedPath = "{{deploy_path}}/shared";
-  foreach ($writable_dirs as $dir) {
-    // Check if shared dir does not exist.
-    if (!test("[ -d $sharedPath/$dir ]")) {
-      // Create shared dir if it does not exist.
-      run("umask 0002; mkdir -p $sharedPath/$dir");
-    }
-  }
-
-})->once();
-// Before deploy:shared since deploy:symlink is a local task call too and we
-// only want this on remote servers.
-after('deploy:shared', 'deploy:create_storage_dirs');
 
 // Additional deploy steps for Laravel.
 before('deploy:symlink', 'deploy:artisan');
