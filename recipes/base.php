@@ -14,11 +14,6 @@ set('deploy_path', '/var/www/{{application}}');
 set('git_tty', TRUE);
 set('allow_anonymous_stats', FALSE);
 
-// Set writable for w-html and w-run as part of www-content group.
-set('writable_mode', 'chmod');
-set('writable_chmod_mode', '2770');
-set('writable_chmod_recursive', FALSE);
-
 // Prepare vendor files to be synced.
 set('rsync_src', realpath('.') . '/.build');
 set('rsync', [
@@ -146,9 +141,7 @@ task('deploy', [
   //'rsync:warmup',
   'rsync',
   'deploy:shared',
-  // Removed, web server w-run user using chmod with ownership of w-html
-  // yields permission issues, and visa versa.
-  //'deploy:writable',
+  'deploy:writable',
   'deploy:symlink',
   'deploy:cachetool',
   'deploy:unlock',
