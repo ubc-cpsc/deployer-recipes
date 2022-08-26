@@ -14,6 +14,10 @@ set('deploy_path', '/var/www/{{application}}');
 set('git_tty', TRUE);
 set('allow_anonymous_stats', FALSE);
 
+// Set writable for web content user and web server user by group.
+set('writable_mode', 'chmod');
+set('writable_chmod_mode', '2770');
+
 // Prepare vendor files to be synced.
 set('rsync_src', realpath('.') . '/.build');
 set('rsync', [
