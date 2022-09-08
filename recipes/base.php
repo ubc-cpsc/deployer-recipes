@@ -13,6 +13,7 @@ set('deploy_path', '/var/www/{{application}}');
 // Allocate tty for git clone. Default value is false.
 set('git_tty', TRUE);
 set('allow_anonymous_stats', FALSE);
+putenv('DO_NOT_TRACK=true');
 
 // Set writable for web content user and web server user by group.
 set('writable_mode', 'chmod');
