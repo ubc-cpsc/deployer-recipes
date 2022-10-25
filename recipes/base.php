@@ -56,15 +56,21 @@ task('build', function () {
 
   // Invoke deploy:update_code.
   $git = whichLocally('git');
-  $target = get('target');
+  $target_branch = get('target');
 
   runLocally("[ -d $build_path ] || mkdir -p $build_path");
 
   // Update all tracking branches.
   runLocally("$git remote update 2>&1");
 
+  // If we aren't building the current branch update from remote.
+  // Assuming remote tracking branch is on 'origin'.
+  if ($target_branch != 'HEAD' && get('branch') != $target_branch) {
+    runLocally("$git fetch -f origin $target_branch:$target_branch 2>&1");
+  }
+
   // Archive target branch/tag/revision to deploy_path.
-  runLocally("$git archive $target | tar -x -f - -C $build_path 2>&1");
+  runLocally("$git archive $target_branch | tar -x -f - -C $build_path 2>&1");
 
   // Invoke deploy:vendors.
   $composer = whichLocally('composer');
