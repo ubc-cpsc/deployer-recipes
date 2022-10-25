@@ -88,6 +88,10 @@ set('bin/grep', function () {
   return which('grep');
 });
 
+set('bin/awk', function () {
+  return which('awk');
+});
+
 // Clear OPCache and realpath caches.
 task('deploy:cachetool', function () {
   $fcgi = get('cachetool');
@@ -108,8 +112,16 @@ task('deploy:cachetool', function () {
     return;
   }
 
-  invoke('cachetool:clear:stat');
-  invoke('cachetool:clear:opcache');
+  // Collect all the PHP sockets.
+  $php_sockets = run("{{bin/ss}} -xa | {{bin/grep}} php | {{bin/awk}} '{print $5}'");
+  $php_sockets = explode(PHP_EOL, $php_sockets);
+
+  // Clear the opcache and stat for each PHP-FPM socket.
+  foreach ($php_sockets as $php_socket) {
+    set('cachetool', $php_socket);
+    invoke('cachetool:clear:stat');
+    invoke('cachetool:clear:opcache');
+  }
 });
 
 set('branch', function () {
