@@ -63,9 +63,10 @@ task('build', function () {
   // Update all tracking branches.
   runLocally("$git remote update 2>&1");
 
+  $current_branch = runLocally("$git branch --show-current");
   // If we aren't building the current branch update from remote.
   // Assuming remote tracking branch is on 'origin'.
-  if ($target_branch != 'HEAD' && get('branch') != $target_branch) {
+  if ($current_branch != $target_branch) {
     runLocally("$git fetch -f origin $target_branch:$target_branch 2>&1");
   }
 
@@ -131,6 +132,7 @@ task('deploy:cachetool', function () {
 });
 
 set('branch', function () {
+  $git = whichLocally('git');
   $stage = get('labels')['stage'] ?? NULL;
   if ($stage == 'production') {
     $production_branches = [
@@ -149,7 +151,7 @@ set('branch', function () {
   }
 
   // Default.
-  return 'HEAD';
+  return runLocally("$git branch --show-current");
 });
 
 task('deploy', [
