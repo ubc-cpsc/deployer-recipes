@@ -36,13 +36,12 @@ task('deploy:artisan', function () {
 
   // Compile all the application's Blade templates.
   invoke('artisan:view:cache');
-
-  // Run the database migrations.
-  invoke('artisan:migrate');
 });
 
 // Additional deploy steps for Laravel.
 before('deploy:symlink', 'deploy:artisan');
+// Run the database migrations, once only after caches cleared.
+after('deploy:artisan', 'artisan:migrate');
 
 /**
  * Database and migrations.
