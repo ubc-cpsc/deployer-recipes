@@ -102,6 +102,8 @@ set('bin/awk', function () {
 });
 
 // Clear OPCache and realpath caches.
+// Revisit once this RFC is in place:
+// @see https://wiki.php.net/rfc/resolve_symlinks
 task('deploy:cachetool', function () {
   $fcgi = get('cachetool');
   $SERVER = '';
