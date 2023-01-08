@@ -19,7 +19,6 @@ require 'recipes/drupal8.php';
 | Recipe     | Docs
 | ------     | ----
 | cachetool  | [read](docs/cachetool.md)
-| rsync      | [read](docs/rsync.md)
 
 
 ## Contributing

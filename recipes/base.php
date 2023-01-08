@@ -4,7 +4,6 @@ namespace Deployer;
 
 import('recipe/common.php');
 import(__DIR__ . '/cachetool.php');
-import('contrib/rsync.php');
 
 set('default_stage', 'staging');
 set('keep_releases', 5);
@@ -20,20 +19,23 @@ set('writable_chmod_mode', '2770');
 
 // Prepare vendor files to be synced.
 set('rsync_src', realpath('.') . '/.build');
-set('rsync', [
-  'exclude' => [
-    '.git',
-  ],
-  'include' => [],
-  'exclude-file' => FALSE,
-  'include-file' => FALSE,
-  'filter' => [],
-  'filter-file' => FALSE,
-  'filter-perdir' => FALSE,
-  'flags' => 'rclE',
-  'options' => ['delete', 'delete-after', 'force'],
-  'timeout' => 300,
+set('rsync_untracked_paths', [
+    'vendor',
 ]);
+
+// Upload via rsync files that are untracked in git yet built.
+task('deploy:rsync', function() {
+    $untracked_paths = get('rsync_untracked_paths');
+    foreach ($untracked_paths as $path) {
+        // Ensure local directory exists before uploading.
+        if (testLocally("[ -d {{rsync_src}}/$path ]")) {
+            writeln("Uploading '$path'");
+            upload("{{rsync_src}}/$path/", "{{release_path}}/$path", [
+                'options' => ['--exclude=.git'],
+            ]);
+        }
+    }
+});
 
 function whichLocally(string $name): string {
   $nameEscaped = escapeshellarg($name);
@@ -163,7 +165,7 @@ task('deploy', [
   'deploy:update_code',
   // Removed due to permission carry over.
   //'rsync:warmup',
-  'rsync',
+  'deploy:rsync',
   'deploy:shared',
   'deploy:writable',
   'deploy:symlink',
