@@ -68,19 +68,21 @@ task('drush:deploy', drush('deploy', ['skipIfNoEnv', 'showOutput']))->once();
 function drush($command, $options = [])
 {
     return function() use ($command, $options) {
-        if (in_array('failIfNoEnv', $options) && ! test('[ -s {{release_path}}/.env ]')) {
+        if (in_array('failIfNoEnv', $options) && ! test('[ -s {{release_or_current_path}}/.env ]')) {
             throw new \Exception('Your .env file is empty! Cannot proceed.');
         }
 
-        if (in_array('skipIfNoEnv', $options) && ! test('[ -s {{release_path}}/.env ]')) {
+        if (in_array('skipIfNoEnv', $options) && ! test('[ -s {{release_or_current_path}}/.env ]')) {
             writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your .env file is empty! Skipping...</>");
             return;
         }
 
+        // Set the working path for where the vendor directory we want to run drush from.
         $path = in_array('runInCurrent', $options)
-            ? '{{deploy_path}}/current'
+            ? '{{current_path}}'
             : '{{release_path}}';
         cd($path);
+
         if (! test("[ -s ./vendor/bin/drush ]")) {
           throw new \Exception('Your drush is missing from vendor/bin! Cannot proceed.');
         }
