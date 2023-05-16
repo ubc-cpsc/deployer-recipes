@@ -50,7 +50,10 @@ desc('Import latest config');
 task('drush:config:import', drush('config:import', ['skipIfNoEnv', 'showOutput']))->once();
 
 desc('Deploy latest db updates and config');
-task('drush:deploy', drush('deploy', ['skipIfNoEnv', 'showOutput']))->once();
+task('drush:deploy', drush('deploy', ['skipIfNoEnv', 'showOutput', 'askInstallIfEmptyDb']))->once();
+
+desc('Install Drupal using existing config');
+task('drush2:site:install', drush('site:install --existing-config', ['skipIfNoEnv', 'showOutput']))->once();
 
 /**
  * Run drush commands.
@@ -85,6 +88,14 @@ function drush($command, $options = [])
 
         if (! test("[ -s ./vendor/bin/drush ]")) {
             throw new \Exception('Your drush is missing from vendor/bin! Cannot proceed.');
+        }
+
+        // Check if the database is empty and if so, ask to install from existing config.
+        if (in_array('askInstallIfEmptyDb', $options) && test('[[ -z "$(./vendor/bin/drush sql:query \'SHOW TABLES\')" ]]')) {
+            if (askConfirmation('You have an empty database, would you like to install drupal with existing config?')) {
+                invoke('drush2:site:install');
+                return;
+            }
         }
 
         // Run command.
