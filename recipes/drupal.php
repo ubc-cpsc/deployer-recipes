@@ -84,10 +84,11 @@ function drush($command, $options = [])
         cd($path);
 
         if (! test("[ -s ./vendor/bin/drush ]")) {
-          throw new \Exception('Your drush is missing from vendor/bin! Cannot proceed.');
+            throw new \Exception('Your drush is missing from vendor/bin! Cannot proceed.');
         }
 
-        $output = run("./vendor/bin/drush $command", ['tty' => TRUE]);
+        // Run command.
+        $output = run("./vendor/bin/drush -y $command");
 
         if (in_array('showOutput', $options)) {
             writeln("<info>$output</info>");
