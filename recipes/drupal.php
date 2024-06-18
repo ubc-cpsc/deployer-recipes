@@ -55,6 +55,9 @@ task('drush:deploy', drush('deploy', ['skipIfNoEnv', 'showOutput', 'askInstallIf
 desc('Install Drupal using existing config');
 task('drush2:site:install', drush('site:install --existing-config', ['skipIfNoEnv', 'showOutput']))->once();
 
+desc('Export existing config');
+task('drush:config:export', drush('config:export --destination=/tmp/cex/{{release_name}}', ['runInCurrent', 'showOutput']))->once();
+
 /**
  * Run drush commands.
  *
