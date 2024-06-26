@@ -20,3 +20,11 @@ task('deploy:drush', function () {
   // https://www.drush.org/latest/deploycommand/
   invoke('drush:deploy');
 })->once();
+
+task('drush:config:export', function() {
+  $releasesList = get('releases_list');
+  $prev_release = max($releasesList);
+  $destination = '{{deploy_path}}/releases/' . $prev_release . '/config/backup';
+  run("mkdir $destination");
+  drush("config:export --destination=$destination", ['runInCurrent', 'showOutput']);
+})->once();
