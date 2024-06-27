@@ -21,10 +21,17 @@ task('deploy:drush', function () {
   invoke('drush:deploy');
 })->once();
 
-task('drush:config:export', function() {
-  $releasesList = get('releases_list');
-  $prev_release = max($releasesList);
-  $destination = '{{deploy_path}}/releases/' . $prev_release . '/config/backup';
-  run("mkdir $destination");
-  drush("config:export --destination=$destination", ['runInCurrent', 'showOutput']);
-})->once();
+task('drush:config:backup', function() {
+  if (has('previous_release')) {
+    $destination = '{{previous_release}}/config/backup';
+  }
+  else {
+    $destination = '{{release_path}}/config/backup';
+  }
+  run("mkdir -p $destination");
+  cd ('{{release_or_current_path}}');
+  run("./vendor/bin/drush -y config:export --destination=$destination");
+  writeln('backup saved to ' . $destination);
+});
+before('deploy:drush', 'drush:config:backup');
+
