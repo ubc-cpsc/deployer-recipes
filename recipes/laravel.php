@@ -10,6 +10,10 @@ require_once __DIR__ . '/base.php';
 
 add('recipes', ['laravel']);
 
+set('writable_dirs', [
+  'bootstrap/cache',
+]);
+
 // Override shared directories.
 set('shared_dirs', ['storage']);
 set('shared_files', ['.env']);
