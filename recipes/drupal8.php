@@ -20,3 +20,18 @@ task('deploy:drush', function () {
   // https://www.drush.org/latest/deploycommand/
   invoke('drush:deploy');
 })->once();
+
+task('drush:config:backup', function() {
+  if (has('previous_release')) {
+    $destination = '{{previous_release}}/config/backup';
+  }
+  else {
+    $destination = '{{release_path}}/config/backup';
+  }
+  run("mkdir -p $destination");
+  cd ('{{release_or_current_path}}');
+  run("./vendor/bin/drush -y config:export --destination=$destination");
+  writeln('backup saved to ' . $destination);
+});
+before('deploy:drush', 'drush:config:backup');
+
