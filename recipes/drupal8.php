@@ -21,6 +21,7 @@ task('deploy:drush', function () {
   invoke('drush:deploy');
 })->once();
 
+desc('Backup production config');
 task('drush:config:backup', function() {
   if (has('previous_release')) {
     $destination = '{{previous_release}}/config/backup';
@@ -29,9 +30,8 @@ task('drush:config:backup', function() {
     $destination = '{{release_path}}/config/backup';
   }
   run("mkdir -p $destination");
-  cd ('{{release_or_current_path}}');
+  cd('{{release_or_current_path}}');
   run("./vendor/bin/drush -y config:export --destination=$destination");
-  writeln('backup saved to ' . $destination);
+  writeln('Backup saved to ' . $destination);
 });
 before('deploy:drush', 'drush:config:backup');
-
