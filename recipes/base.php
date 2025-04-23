@@ -171,9 +171,7 @@ task('deploy', [
   'deploy:shared',
   'deploy:writable',
   'deploy:symlink',
-  // Remove cache clearing in PHP-FPM.
-  // @see https://deployer.org/docs/7.x/avoid-php-fpm-reloading
-  // 'deploy:cachetool',
+  'deploy:cachetool',
   'deploy:unlock',
   'deploy:cleanup',
   'build:cleanup',
