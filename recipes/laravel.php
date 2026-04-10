@@ -38,8 +38,8 @@ task('deploy:artisan', function () {
   // Discover and cache the application's events and listeners.
   invoke('artisan:event:cache');
 
-  // Compile all the application's Blade templates.
-  invoke('artisan:view:cache');
+  // Intentionally exclude deploy-time Blade compilation on shared/NFS storage.
+  // Apps that want view caching can invoke artisan:view:cache explicitly.
 });
 
 // Additional deploy steps for Laravel.
