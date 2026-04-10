@@ -64,3 +64,7 @@ task('artisan:migrate:rollback', artisan('migrate:rollback --force', ['showOutpu
 
 desc('Shows the status of each migration');
 task('artisan:migrate:status', artisan('migrate:status', ['showOutput']))->once();
+
+// Override the imported task so Blade compilation runs once per deploy for NFS.
+desc('Compiles all of the application\'s Blade templates');
+task('artisan:view:cache', artisan('view:cache', ['min' => '5.6']))->once();
