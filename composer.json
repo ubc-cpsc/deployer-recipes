@@ -17,12 +17,19 @@
             "autoload.php"
         ]
     },
+    "require": {
+        "php": "^8.3",
+        "deployer/deployer": "^8.0"
+    },
     "config": {
         "discard-changes": true,
         "optimize-autoloader": true,
+        "platform": {
+            "php": "8.3.0"
+        },
         "sort-packages": true
     },
-    "require-dev": {
-        "deployer/deployer": "^7.0"
+    "scripts": {
+        "test": "@php tests/smoke.php"
     }
 }

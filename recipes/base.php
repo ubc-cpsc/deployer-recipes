@@ -38,7 +38,7 @@ task('deploy:rsync', function() {
 });
 
 function whichLocally(string $name): string {
-  $nameEscaped = escapeshellarg($name);
+  $nameEscaped = quote($name);
 
   // Try `command`, should cover all Bourne-like shells
   // Try `which`, should cover most other cases
