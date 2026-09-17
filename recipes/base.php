@@ -108,8 +108,8 @@ task('deploy:cachetool', function () {
   $fcgi = get('cachetool');
   $SERVER = '';
   $PORT = '';
-  if (strpos($fcgi, ':') !== FALSE) {
-    list($SERVER, $PORT) = explode(':', $fcgi);
+  if (str_contains($fcgi, ':')) {
+    [$SERVER, $PORT] = explode(':', $fcgi);
   }
 
   // Check to see that we can connect to the PHP-FPM port we're trying to clear.
@@ -117,15 +117,17 @@ task('deploy:cachetool', function () {
     writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your server doesn't have PHP-FPM running on port $PORT. Skipping...</>");
     return;
   }
-  // Check to see if we have a socket open that has 'php' in the name.
-  elseif (!$PORT && run("{{bin/ss}} -xa | {{bin/grep}} php -q; if [ $? -eq 0 ]; then echo 'true'; fi") !== 'true') {
+  // Check for a listening and open socket that has 'php' in the name.
+  elseif (!$PORT && run("{{bin/ss}} -xl | {{bin/grep}} php -q; if [ $? -eq 0 ]; then echo 'true'; fi") !== 'true') {
     writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your server doesn't have PHP-FPM running on a socket. Skipping...</>");
     return;
   }
 
-  // Collect all the PHP sockets.
-  $php_sockets = run("{{bin/ss}} -xa | {{bin/grep}} php | {{bin/awk}} '{print $5}'");
+  // Collect all listening PHP sockets.
+  $php_sockets = run("{{bin/ss}} -xl | {{bin/grep}} php | {{bin/awk}} '{print $5}'");
   $php_sockets = explode(PHP_EOL, $php_sockets);
+  // Remove duplicates.
+  $php_sockets = array_unique($php_sockets);
 
   // Clear the opcache and stat for each PHP-FPM socket.
   foreach ($php_sockets as $php_socket) {
