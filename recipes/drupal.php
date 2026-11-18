@@ -6,6 +6,9 @@ require_once __DIR__ . '/base.php';
 
 add('recipes', ['drupal']);
 
+// Require a .env file only for sites that depend on it.
+set('drush_require_env', true);
+
 // Shared directories and files.
 set('shared_dirs', [
   'private',
@@ -70,24 +73,19 @@ task('drush:site:install', drush('site:install --existing-config', ['showOutput'
 function drush($command, $options = [])
 {
     return function() use ($command, $options) {
-        // Skip when there aren't database connection variables.
-        if (! test('[ -s {{release_or_current_path}}/.env ]')) {
-            writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your .env file is empty! Skipping...</>");
-            return;
-        }
-
         // Set the working path for where the vendor directory we want to run drush from.
         $path = in_array('runInCurrent', $options)
             ? '{{current_path}}'
             : '{{release_path}}';
         cd($path);
+        validateDrushEnvironmentFile();
 
         if (! test("[ -s ./vendor/bin/drush ]")) {
             throw new \Exception('Your drush is missing from vendor/bin! Cannot proceed.');
         }
 
         // Check if the database is empty and if so, ask to install from existing config.
-        if (in_array('askInstallIfEmptyDb', $options) && test('[[ -z "$(./vendor/bin/drush sql:query \'SHOW TABLES\')" ]]')) {
+        if (in_array('askInstallIfEmptyDb', $options) && run("./vendor/bin/drush sql:query 'SHOW TABLES'") === '') {
             if (askConfirmation('You have an empty database, would you like to install drupal with existing config?')) {
                 invoke('drush:site:install');
                 return;
@@ -101,4 +99,15 @@ function drush($command, $options = [])
             writeln("<info>$output</info>");
         }
     };
+}
+
+/**
+ * Check for a usable .env file in the directory where Drush will run.
+ */
+function validateDrushEnvironmentFile(): void
+{
+    if (get('drush_require_env') && !test('[ -f ./.env ] && [ -s ./.env ] && [ -r ./.env ]')) {
+        $path = get('working_path');
+        throw new \RuntimeException("Required .env file at $path/.env is missing, empty, or unreadable.");
+    }
 }
