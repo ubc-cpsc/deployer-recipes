@@ -35,6 +35,24 @@ require 'recipes/drupal8.php';
 | drupal8   |  |
 | laravel   |  |
 
+### Drupal `.env` validation
+
+The Drupal recipes default `drush_require_env` to `true`. Before running Drush,
+the task requires a readable, nonempty `.env` in the directory where Drush will
+run. A missing or unusable file stops the task and reports the path.
+
+Set `drush_require_env` to `false` if your site runs Drush and supplies its
+database credentials without a `.env` file, for example through Drupal's local
+settings. Add this after loading the recipe in `deploy.php`.
+
+```php
+set('drush_require_env', false);
+```
+
+The setting bypasses only the `.env` check. Drush commands still run, and a
+failed database probe still stops the task. Deploy workflows that omit the
+Drush tasks need no override.
+
 ## Contributing
 
 Read the [contributing](https://github.com/deployphp/ubccpsc/blob/master/CONTRIBUTING.md) guide, take a look on open [issues](https://github.com/ubccpsc/recipes/issues)

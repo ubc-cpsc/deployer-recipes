@@ -26,14 +26,10 @@ task('drush:config:backup', function() {
     $destination = has('previous_release') ? '{{previous_release}}' : '{{release_path}}';
     // Execute all within the previous release or current release directory.
     within($destination, function () use ($destination) {
-        // Skip when there aren't database connection variables.
-        if (! test('[ -s ./.env ]')) {
-            writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your .env file is empty! Skipping...</>");
-            return;
-        }
+        validateDrushEnvironmentFile();
 
         // Skip when there are no tables in the database.
-        if (test('[[ -z "$(./vendor/bin/drush sql:query \'SHOW TABLES\')" ]]')) {
+        if (run("./vendor/bin/drush sql:query 'SHOW TABLES'") === '') {
             writeln("<fg=yellow;options=bold;>Warning: </><fg=yellow;>Your database is empty! Skipping...</>");
             return;
         }
